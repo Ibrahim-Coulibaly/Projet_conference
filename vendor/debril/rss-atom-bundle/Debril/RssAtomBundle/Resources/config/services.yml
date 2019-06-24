@@ -1,0 +1,37 @@
+parameters:
+    debril.provider.default.class: Debril\RssAtomBundle\Provider\MockProvider
+    debril.rss_atom.provider.class: '%debril.provider.default.class%'
+    debril.provider.doctrine.class: Debril\RssAtomBundle\Provider\DoctrineFeedContentProvider
+
+services:
+    guzzle.client:
+        class: GuzzleHttp\Client
+
+    feedio.client:
+        class: FeedIo\Adapter\Guzzle\Client
+        arguments: ["@guzzle.client"]
+
+    feedio:
+        public: true
+        class: FeedIo\FeedIo
+        arguments: ["@feedio.client", "@logger"]
+        calls:
+          - method: addDateFormats
+            arguments:
+              - '%debril_rss_atom.date_formats%'
+
+    FeedIo\FeedIo:
+        alias: feedio
+
+    debril.rss_atom.provider:
+        class: '%debril.rss_atom.provider.class%'
+
+    debril.provider.default:
+        alias: debril.rss_atom.provider
+
+    Debril\RssAtomBundle\Provider\FeedContentProviderInterface:
+        alias: debril.rss_atom.provider
+
+    Debril\RssAtomBundle\Controller\StreamController:
+        public: false
+        tags: ['controller.service_arguments']

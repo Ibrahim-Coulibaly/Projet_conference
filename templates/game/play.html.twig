@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if app.flashes('success') is defined %}
+        {% for msg in app.flashes('success')%}
+            <div class="alert alert-info"> {{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+    <div class="container jumbotron">
+        {% if form is defined %}
+        <div class="form-group">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+            {{ form_end(form) }}
+        </div>
+        {% else %}
+            {% if error is defined %}
+                <span>{{ error }}</span>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block body %}
+    <h1>{{ article.title }}</h1>
+
+    <div class="card text-white bg-dark mb-3" style="max-width: 40rem;">
+        <div class="card-header">
+            {% if article.image != '' %}
+                <img width='600' heigth='300' src='{{ article.image }}'>
+            {% endif %}
+        </div>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Description</th>
+                <td>{{ article.content }}</td>
+            </tr>
+            <tr>
+                <th>Publié le</th>
+                <td>{{ article.publishDate ? article.publishDate|date('Y-m-d à H:i') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% for comment in comments %}
+        {% if comment is iterable %}
+           <div class="alert alert-dismissible alert-success sm"><label>{{ comment.username }}</label> : <br> {{ comment.content }} </div>
+            <p>Publiée le {{ comment.publishDate ? article.publishDate|date('Y-m-d à H:i') : ''}}</p>
+        {% endif %}
+    {% else %}
+        <span class="alert-secondary" colspan="5">no comment found</span>
+    {% endfor %}
+    <div class="jumbotron">
+        {% if form is defined %}
+            {% if form is iterable %}
+                <div class="form-group">
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+                    {{ form_end(form) }}
+                </div>
+            {% else %}
+                <span>Cet Article n'accepte pas les commentaires</span>
+            {% endif %}
+        {% else %}
+            <span>{{ error }}</span>
+        {% endif %}
+    </div>
+    <a href="{{ path('article_index') }}">Retour au Blog</a>
+
+
+{% endblock %}

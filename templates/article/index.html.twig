@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog{% endblock %}
+
+{% block body %}
+    <script>
+        $(function () {
+
+
+            $('.activeComs').click(function (){
+                var id = this.id;
+                $.ajax({
+                    method: "POST",
+                    url: "http://127.0.0.1:8082/ajax/active",
+                    dataType : 'html',
+                    data: { idarticle: id},
+                    success: function(response){
+                        $('#'+id).toggleClass('alert-danger');
+                        console.log(response);
+                        if (response === '') {
+                            $('#'+id).html('Censuré');
+                        } else {
+                            $('#'+id).html('Non Censuré');
+                        }
+                    },
+                    error : function(){
+                        document.write('no');
+                    }
+                });
+            });
+        });
+    </script>
+    <h1>Tous les Articles</h1>
+    {% if message is defined %}nklmklnklm
+        <span class="alert-danger"> {% dump(message)%} </span>
+    {% endif %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Publié le</th>
+                <th>👁</th>
+                <th>Commentaires</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for article in articles %}
+            <tr>
+                <td>{{ article.title }}</td>
+                <td>{{ article.publishDate ? article.publishDate|date('Y-m-d à H:i') : '' }}</td>
+                <td><a href="{{ path('article_show', {'id': article.id}) }}">Consulter</a></td>
+                <td><!-- Default switch -->
+                    <button id='{{ article.id }}' class="activeComs btn btn-success"></button>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+        <div class="col-md-2 col-md-offset-5">
+            <ul class="pagination">
+                {% for i in 1..maxPages %}
+                    <li class="page-item active">
+                        <a class="page-link" href="{{ path('article_index', {page: i}) }}">{{ i }}</a>
+                    </li>&nbsp;
+                {% endfor %}
+            </ul>
+        </div>
+{% endblock %}

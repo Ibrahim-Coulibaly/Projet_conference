@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="result" data-is-result="{{ result|json_encode }}" ></div>
+    <script>
+        $(function () {
+            $('.alert-dismissible').html("<img src='/Eclipse-1s-200px.svg'> <h1>La roue tourne , retour à la case départ 🎰 </h1> ");
+            let selector = document.querySelector('.result');
+            let result = selector.dataset.isResult;
+            setTimeout(function(){
+                $.ajax({
+                    method: "POST",
+                    url: "http://127.0.0.1:8082/ajax/result",
+                    type : 'GET',
+                    data: 'result=' + result,
+                    dataType : 'html',
+                    success: function(page){
+                        $('.alert-dismissible').html(page);
+                    },
+                    error : function(){
+                        document.write('no');
+                    }
+                })
+            },2000);
+        });
+    </script>
+{% endblock %}
+{% block footer %}
+    <div class="alert alert-dismissible alert-secondary"></div>
+{% endblock %}
